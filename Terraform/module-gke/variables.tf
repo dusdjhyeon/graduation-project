@@ -7,8 +7,7 @@ variable "prefix" {
 }
 
 variable "region" {
-  type    = string
-  default = "asia-northeast3"
+  type = string
 }
 
 variable "cluster_name" {

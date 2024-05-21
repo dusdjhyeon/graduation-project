@@ -3,7 +3,7 @@
 resource "google_container_cluster" "main_cluster" {
   name                     = "${var.prefix}-gke"
   project                  = var.project_id
-  location                 = var.region
+  location                 = "${var.region}-a"
   min_master_version       = "1.29"
   remove_default_node_pool = true
   initial_node_count       = 1
@@ -14,7 +14,7 @@ resource "google_container_cluster" "main_cluster" {
 resource "google_container_node_pool" "node_pool" {
   project    = var.project_id
   name       = "${google_container_cluster.main_cluster.name}-node-pool"
-  location   = var.region
+  location   = "${var.region}-a"
   cluster    = google_container_cluster.main_cluster.name
   node_count = var.gke_num_nodes
   node_config {
