@@ -1,0 +1,44 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: adas-highway-scenario-
+spec:
+  entrypoint: highway-scenario
+  templates:
+  - name: highway-scenario
+    dag:
+      tasks:
+      - name: highway-traffic
+        template: highway-traffic-sim
+      - name: vehicle-detection
+        template: vehicle-detection
+        dependencies:
+          - highway-traffic
+      - name: lane-keeping
+        template: lane-keeping-assist
+        dependencies:
+          - highway-traffic
+      - name: adaptive-cruise
+        template: adaptive-cruise-control
+        dependencies:
+          - highway-traffic
+  
+  - name: highway-traffic-sim
+    container:
+      image: adas-sim:v1
+      command: [python, highway_traffic_sim.py]
+    
+  - name: vehicle-detection
+    container:
+      image: adas-sim:v1
+      command: [python, vehicle_detection.py]
+    
+  - name: lane-keeping-assist
+    container:
+      image: adas-sim:v1
+      command: [python, lane_keeping_assist.py]
+    
+  - name: adaptive-cruise-control
+    container:
+      image: adas-sim:v1
+      command: [python, adaptive_cruise_control.py]
