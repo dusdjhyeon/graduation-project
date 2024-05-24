@@ -1,0 +1,65 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: adas-highway-weather-scenario-
+spec:
+  entrypoint: highway-weather-scenario
+  templates:
+  - name: highway-weather-scenario
+    dag:
+      tasks:
+      - name: weather-monitor
+        template: weather-monitor
+      - name: weather-analysis
+        template: weather-analysis
+        dependencies: [weather-monitor]
+      - name: adas-highway-scenario
+        template: adas-highway-scenario
+        dependencies: [weather-analysis]
+      - name: data-backup
+        template: data-backup
+        dependencies: [adas-highway-scenario]
+
+  - name: weather-monitor
+    container:
+      image: weather-monitor:v1
+      command: [python, weather_monitor.py]
+
+  - name: weather-analysis
+    container:
+      image: weather-analyzer:v1
+      command: [python, weather_analyzer.py]
+
+  - name: adas-highway-scenario
+    dag:
+      tasks:
+      - name: highway-traffic
+        template: highway-traffic-sim
+      - name: vehicle-detection
+        template: vehicle-detection
+        dependencies:
+          - highway-traffic
+      - name: lane-keeping
+        template: lane-keeping-assist
+        dependencies:
+          - highway-traffic
+      - name: adaptive-cruise
+        template: adaptive-cruise-control
+        dependencies:
+          - highway-traffic
+      - name: weather-adaptation
+        template: weather-adaptation
+        dependencies:
+          - vehicle-detection
+          - lane-keeping
+          - adaptive-cruise
+
+  - name: weather-adaptation
+    container:
+      image: adas-sim:v1
+      command: [python, weather_adaptation.py]
+
+  - name: data-backup
+    container:
+      image: backup-tool:v1
+      command: [python, backup.py]
