@@ -1,0 +1,63 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: adas-urban-scenario-
+spec:
+  entrypoint: urban-scenario
+  templates:
+  - name: urban-scenario
+    dag:
+      tasks:
+      - name: urban-traffic-sim
+        template: urban-traffic-simulation
+      - name: obstacle-detection
+        template: obstacle-detection
+        dependencies:
+          - urban-traffic-sim
+      - name: intersection-handling
+        template: intersection-handling
+        dependencies:
+          - urban-traffic-sim
+      - name: path-planning
+        template: path-planning
+        dependencies:
+          - obstacle-detection
+          - intersection-handling
+      - name: vehicle-control
+        template: vehicle-control
+        dependencies:
+          - path-planning
+      - name: data-collection
+        template: data-collection
+        dependencies:
+          - vehicle-control
+
+  - name: urban-traffic-simulation
+    container:
+      image: adas-sim:v1
+      command: [python, urban_traffic_sim.py]
+
+  - name: obstacle-detection
+    container:
+      image: adas-sim:v1
+      command: [python, obstacle_detection.py]
+
+  - name: intersection-handling
+    container:
+      image: adas-sim:v1
+      command: [python, intersection_handling.py]
+
+  - name: path-planning
+    container:
+      image: adas-sim:v1
+      command: [python, path_planning.py]
+
+  - name: vehicle-control
+    container:
+      image: adas-sim:v1
+      command: [python, vehicle_control.py]
+
+  - name: data-collection
+    container:
+      image: adas-sim:v1
+      command: [python, data_collection.py]
