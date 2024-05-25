@@ -12,33 +12,34 @@ spec:
         template: highway-traffic-sim
       - name: vehicle-detection
         template: vehicle-detection
-        dependencies:
-          - highway-traffic
+        dependencies: [highway-traffic]
       - name: lane-keeping
         template: lane-keeping-assist
-        dependencies:
-          - highway-traffic
+        dependencies: [highway-traffic]
       - name: adaptive-cruise
         template: adaptive-cruise-control
-        dependencies:
-          - highway-traffic
+        dependencies: [highway-traffic]
   
-  - name: highway-traffic-sim
+  - name: highway-traffic-sim    # 고속도로 교통 시뮬레이션 
+    nodeSelector:
+      "node-role.kubernetes.io/argo-spot-worker": "true"
     container:
       image: adas-sim:v1
       command: [python, highway_traffic_sim.py]
     
-  - name: vehicle-detection
+  - name: vehicle-detection     # 차량 감지
+    nodeSelector:
+      "node-role.kubernetes.io/argo-spot-worker": "true"
     container:
       image: adas-sim:v1
       command: [python, vehicle_detection.py]
     
-  - name: lane-keeping-assist
+  - name: lane-keeping-assist          # 차 선 유지 보조(real-time)
     container:
       image: adas-sim:v1
       command: [python, lane_keeping_assist.py]
     
-  - name: adaptive-cruise-control
+  - name: adaptive-cruise-control       # 적응형 속도 조절(real-time)  
     container:
       image: adas-sim:v1
       command: [python, adaptive_cruise_control.py]

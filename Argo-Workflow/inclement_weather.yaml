@@ -1,3 +1,4 @@
+# Especially, on highway
 apiVersion: argoproj.io/v1alpha1
 kind: Workflow
 metadata:
@@ -16,16 +17,17 @@ spec:
       - name: adas-highway-scenario
         template: adas-highway-scenario
         dependencies: [weather-analysis]
-      - name: data-backup
-        template: data-backup
-        dependencies: [adas-highway-scenario]
 
-  - name: weather-monitor
+  - name: weather-monitor      # 실시간 기상 데이터 모니터링
+    nodeSelector:
+      "node-role.kubernetes.io/argo-spot-worker": "true"
     container:
       image: weather-monitor:v1
       command: [python, weather_monitor.py]
 
-  - name: weather-analysis
+  - name: weather-analysis     # 기상 데이터 분석
+    nodeSelector:
+      "node-role.kubernetes.io/argo-spot-worker": "true"
     container:
       image: weather-analyzer:v1
       command: [python, weather_analyzer.py]
@@ -33,33 +35,42 @@ spec:
   - name: adas-highway-scenario
     dag:
       tasks:
-      - name: highway-traffic
+      - name: highway-traffic       # 고속도로 교통 상황
         template: highway-traffic-sim
-      - name: vehicle-detection
+      - name: vehicle-detection     # 차량 감지 기능
         template: vehicle-detection
-        dependencies:
-          - highway-traffic
-      - name: lane-keeping
+        dependencies: [highway-traffic]
+      - name: lane-keeping         # 차선 유지 보조 기능
         template: lane-keeping-assist
-        dependencies:
-          - highway-traffic
-      - name: adaptive-cruise
+        dependencies: [highway-traffic]
+      - name: adaptive-cruise      # 적응형 속도 조절
         template: adaptive-cruise-control
-        dependencies:
-          - highway-traffic
-      - name: weather-adaptation
+        dependencies: [highway-traffic]
+      - name: weather-adaptation   # 기상 상황별
         template: weather-adaptation
-        dependencies:
-          - vehicle-detection
-          - lane-keeping
-          - adaptive-cruise
+        dependencies: [vehicle-detection, lane-keeping, adaptive-cruise]
+
+  # Should be able to be fixed by replacement, even if it's not a highway situation, as long as the relevant part is fixed 
+  - name: vehicle-detection     # 차량 감지
+    nodeSelector:
+      "node-role.kubernetes.io/argo-spot-worker": "true"
+    container:
+      image: adas-sim:v1
+      command: [python, vehicle_detection.py]
+    
+  - name: lane-keeping-assist          # 차 선 유지 보조(real-time)
+    container:
+      image: adas-sim:v1
+      command: [python, lane_keeping_assist.py]
+    
+  - name: adaptive-cruise-control       # 적응형 속도 조절(real-time)  
+    container:
+      image: adas-sim:v1
+      command: [python, adaptive_cruise_control.py]
 
   - name: weather-adaptation
+    nodeSelector:
+      "node-role.kubernetes.io/argo-spot-worker": "true"
     container:
       image: adas-sim:v1
       command: [python, weather_adaptation.py]
-
-  - name: data-backup
-    container:
-      image: backup-tool:v1
-      command: [python, backup.py]

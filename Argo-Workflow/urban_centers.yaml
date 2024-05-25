@@ -12,52 +12,48 @@ spec:
         template: urban-traffic-simulation
       - name: obstacle-detection
         template: obstacle-detection
-        dependencies:
-          - urban-traffic-sim
+        dependencies: [urban-traffic-sim]
       - name: intersection-handling
         template: intersection-handling
-        dependencies:
-          - urban-traffic-sim
+        dependencies: [urban-traffic-sim]
       - name: path-planning
         template: path-planning
-        dependencies:
-          - obstacle-detection
-          - intersection-handling
+        dependencies: [obstacle-detection, intersection-handling]
       - name: vehicle-control
         template: vehicle-control
-        dependencies:
-          - path-planning
+        dependencies: [path-planning]
       - name: data-collection
         template: data-collection
-        dependencies:
-          - vehicle-control
+        dependencies: [vehicle-control]
 
-  - name: urban-traffic-simulation
+  - name: urban-traffic-simulation        # 도시 교통 시뮬레이션 
     container:
       image: adas-sim:v1
       command: [python, urban_traffic_sim.py]
 
-  - name: obstacle-detection
+  - name: obstacle-detection             # 장애물 탐지 기능
     container:
       image: adas-sim:v1
       command: [python, obstacle_detection.py]
 
-  - name: intersection-handling
+  - name: intersection-handling          # 교차로 상황 처리
     container:
       image: adas-sim:v1
       command: [python, intersection_handling.py]
 
-  - name: path-planning
+  - name: path-planning                  # 경로 계획
     container:
       image: adas-sim:v1
       command: [python, path_planning.py]
 
-  - name: vehicle-control
+  - name: vehicle-control                # 차량 제어
     container:
       image: adas-sim:v1
       command: [python, vehicle_control.py]
 
-  - name: data-collection
+  - name: data-collection                # 데이터 수집
+    nodeSelector:
+      "node-role.kubernetes.io/argo-spot-worker": "true"
     container:
       image: adas-sim:v1
       command: [python, data_collection.py]
