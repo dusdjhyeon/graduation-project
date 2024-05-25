@@ -7,7 +7,7 @@ export GCP_SERVICE_ACCOUNT_KEYFILE="/home/dusdjhyeon/grad-proj.json"
 export BASE64ENCODED_GCP_PROVIDER_CREDS=$(base64 $GCP_SERVICE_ACCOUNT_KEYFILE | tr -d "\n") # base64 encode the GCP credentials
 
 export GKE_CLUSTER_NAME="dh-gke"
-export GKE_CLUSTER_ZONE="asia-northeast3-c"
+export GKE_CLUSTER_ZONE="us-central1-a"
 
 # Set environment vars for Crossplane installation
 export CROSSPLANE_VERSION="1.16.0"
