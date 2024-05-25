@@ -1,0 +1,14 @@
+apiVersion: container.gcp.crossplane.io/v1beta2
+kind: Cluster
+metadata:
+  name: adas-weather
+spec:
+  forProvider:
+    location: asia-northeast3-c
+    autopilot:
+      enabled: true
+    nodeConfig:
+      preemptible: true
+  writeConnectionSecretToRef:
+    name: auto-kube
+    namespace: default
