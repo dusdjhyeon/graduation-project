@@ -1,12 +1,14 @@
 apiVersion: container.gcp.crossplane.io/v1beta2
 kind: Cluster
 metadata:
-  name: auto-k8s
+  name: adas-highway
 spec:
   forProvider:
     location: asia-northeast3-c
     autopilot:
       enabled: true
+    nodeConfig:
+      preemptible: true
   writeConnectionSecretToRef:
-    name: auto-kube
+    name: adas-kube
     namespace: default
