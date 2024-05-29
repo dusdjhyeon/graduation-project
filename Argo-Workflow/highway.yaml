@@ -28,11 +28,28 @@ spec:
       command: [python, highway_traffic_sim.py]
     
   - name: vehicle-detection     # 차량 감지
+    retryStrategy:
+      limit: 3
+      backoff:
+        duration: 10s
+        factor: 2
+        maxDuration: 5m 
     nodeSelector:
       "node-role.kubernetes.io/argo-spot-worker": "true"
     container:
       image: adas-sim:v1
       command: [python, vehicle_detection.py]
+    outputs:
+      parameters:
+      - name: result
+        valueFrom:
+          path: /tmp/execution-result
+    onExit:
+    - name: on-demand-execution
+      when: "{{workflow.status}} != Succeed"
+      container:
+        image: adas-sim:v1
+        command: [python, vehicle_detection.py]
     
   - name: lane-keeping-assist          # 차 선 유지 보조(real-time)
     container:

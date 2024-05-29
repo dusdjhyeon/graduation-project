@@ -51,6 +51,7 @@ spec:
         dependencies: [vehicle-detection, lane-keeping, adaptive-cruise]
 
   # Should be able to be fixed by replacement, even if it's not a highway situation, as long as the relevant part is fixed 
+  # You can reuse workflow which already exists
   - name: vehicle-detection     # 차량 감지
     nodeSelector:
       "node-role.kubernetes.io/argo-spot-worker": "true"
