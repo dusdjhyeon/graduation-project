@@ -1,0 +1,18 @@
+yamlapiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gp-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gp-operator
+  template:
+    metadata:
+      labels:
+        app: gp-operator
+    spec:
+      containers:
+      - name: gp-operator
+        image: dusdjhyeon/gp-operator:latest
+        imagePullPolicy: Always
