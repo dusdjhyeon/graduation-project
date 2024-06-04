@@ -1,0 +1,18 @@
+# prometheus.yml -> section: rule_files
+
+recording_rules.yml: | 
+groups:
+- interval: 5m
+  name: adas_workload_cpu_usage
+  rules:
+  - expr: |
+      rate(container_cpu_usage_seconds_total{container!~'POD', image!='', long_term='true'}[1m]) * on (cluster, namespace, pod) group_left(label_simulation_type) kube_pod_labels
+    record: workload:adas_long_term_cpu_usage:rate_1m
+  - expr: |
+      max by (cluster, namespace, container, label_simulation_type) (
+        workload:adas_long_term_cpu_usage:rate_1m
+      )
+    record: workload:adas_long_term_cpu_usage:max_rate_1m
+  - expr: |
+      quantile_over_time(0.95, workload:adas_long_term_cpu_usage:max_rate_1m[5d:1m])
+    record: workload:adas_long_term_cpu_usage:q95_max_rate_1m
