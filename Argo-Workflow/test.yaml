@@ -1,0 +1,39 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Workflow
+metadata:
+  generateName: adas-workload-cpu-usage-
+spec:
+  entrypoint: stress-test
+  templates:
+  - name: stress-test
+    steps:
+    - - name: stress-cpu
+        template: stress-cpu
+        arguments:
+          parameters:
+            - name: duration
+              value: "60s"
+
+  - name: stress-cpu
+    inputs:
+      parameters:
+        - name: duration
+    container:
+      image: progrium/stress
+      command: ["stress"]
+      args: ["--cpu", "2", "--timeout", "{{inputs.parameters.duration}}"]
+      resources:
+        limits:
+          cpu: "1"
+          memory: "512Mi"
+      env:
+        - name: long_term
+          value: "true" 
+        - name: cluster
+          value: "test-cluster"
+        - name: namespace
+          value: "default"
+        - name: pod
+          value: "test-pod"
+        - name: label_simulation_type
+          value: "test-simulation"
