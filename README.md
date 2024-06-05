@@ -10,33 +10,6 @@
 
 
 
-
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#mag-about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#card_file_box-built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#rocket-getting-started">Getting Started</a>
-      <ul>
-        <li><a href="#zap-prerequisites">Prerequisites</a></li>
-      </ul>
-    </li>
-    <li><a href="#globe_with_meridians-architecture">Architecture</a></li>
-    <li><a href="#memo-rest-apii">REST API</a></li>
-    <li><a href="#fire-contributing">Contributing</a></li>
-    <li><a href="#closed_lock_with_key-license">License</a></li>
-    <li><a href="#speech_balloon-contact">Contact</a></li>
-  </ol>
-</details>
-
-
-
 <!-- ABOUT THE PROJECT -->
 ## :mag: About The Project
 해당 프로젝트는 Advanced Driver Assistance System(ADAS) 시뮬레이션을 위한 클라우드 환경을 일반적인 고성능 컴퓨팅과 Job Schedule을 이용한 방식이 아닌 Kubernetes 환경에서 진행하기 위한 인프라 아키텍처 설계 연구입니다. 
@@ -56,12 +29,14 @@ GCP 환경에서 Argo Workflow로 HPC Workload 배포시 유연한 적응을 위
 [![Argo-workflow][Argo-workflow]][Argo-workflow-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+<br>
 
 ## :globe_with_meridians: Architecture
 ### :triangular_flag_on_post: Overall Simulation Architecture
 ![overall](./images/full-arch.png)
 
 - ADAS 시뮬레이션을 위한 전체적인 아키텍처 설계입니다.
+<br>
 
 
 ### :triangular_flag_on_post: Kubernetes Advanced Architecture
@@ -74,6 +49,7 @@ GCP 환경에서 Argo Workflow로 HPC Workload 배포시 유연한 적응을 위
 - Main Cluster의 Prometheus의 메트릭을 쿼리해 장기간 실행 라벨이 붙은 워크로드에 대해서 매일 새벽 2시 자동으로 Pod Scale이 되도록 합니다.
 - CPU의 Upper Bound에 맞춰 python operator가 pod의 사양을 자동으로 변경해줍니다. 
 
+<br>
 
 ### :triangular_flag_on_post: Detailed Logic
 <img src="./images/dag-spot.png" style="width:300px;">
@@ -81,6 +57,7 @@ GCP 환경에서 Argo Workflow로 HPC Workload 배포시 유연한 적응을 위
 - DAG 수행중 일부 워크로드의 경우 spot vm에서 실행 가능하도록 해 비용 및 노드 리소스를 절감합니다. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
+<br>
 
 <!-- LICENSE -->
 ## :closed_lock_with_key: License
