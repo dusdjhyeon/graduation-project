@@ -12,6 +12,6 @@ spec:
         spec:
           containers:
           - name: cpu-scaling-operator
-            image: dusdjhyeon/cpu-scaling-operator:latest
+            image: gcr.io/$(GCP_PROJECT_ID)/operator:latest
             imagePullPolicy: Always
           restartPolicy: OnFailure
