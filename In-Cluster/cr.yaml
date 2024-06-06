@@ -1,0 +1,11 @@
+apiVersion: "dusdjhyeon.com/v1"
+kind: AutoScaler
+metadata:
+  name: dusdj-autoscaler
+spec:
+  upperBound: 95
+  scaleTargetRef:
+    apiVersion: "apps/v1"
+    kind: Deployment
+    name: dusdj-deployment
+    
