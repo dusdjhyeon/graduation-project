@@ -7,7 +7,7 @@
   <a href="https://github.com/dusdjhyeon/graduation-project">
     <h3 align="center">HPC(esp, ADAS Simulation) Workloads on Kubernetes</h3>
   </a>
-
+</div>
 
 
 <!-- ABOUT THE PROJECT -->
@@ -32,6 +32,44 @@ GCP 환경에서 Argo Workflow로 HPC Workload 배포시 유연한 적응을 위
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 <br>
+
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+<br>
+
+## :deciduous_tree: Repository Structure
+
+``` bash
+.
+├── Argo-Workflow               # ADAS Simulation Workload를 위한 Argo-Workflow 예제 코드 및 실제 연구용 임시 workload 코드가 들어있습니다.
+│   ├── highway.yaml
+│   ├── inclement_weather.yaml
+│   ├── test.yaml
+│   └── urban_centers.yaml
+├── Crossplane                  # Main Cluster(w/Terraform)에서 Multi-Cluster 구축을 위한 Crossplane Cluster 코드입니다.
+│   ├── bash
+│   ├── highway.yaml
+│   ├── inclement_weather.yaml
+│   └── urban_centers.yaml
+├── In-Cluster                  # Cluster 내부에서 사용하던 코드들을 저장하는 Directory입니다.
+│   ├── cr.yaml
+│   ├── crd.yaml
+│   ├── cronjob.yaml
+│   ├── operator-python        # Python operator 코드 및 Dockerfile에 대한 코드입니다.
+│   └── prometheus             # prometheus 쿼리(PromQL)에 사용한 코드가 들어 있습니다.
+├── LICENSE
+├── README.md
+├── Terraform                 # GKE 간헐적 구동을 위한 GKE Terraform 코드입니다.
+│   ├── main.tf
+│   ├── module-gke
+│   ├── module-network
+│   └── variables.tf
+└── images
+    ├── cpu-optimize.png
+    ├── dag-spot.png
+    ├── full-arch.png
+    └── k8s-arch.png
+```
 
 ## :globe_with_meridians: Architecture
 ### :triangular_flag_on_post: Overall Simulation Architecture
