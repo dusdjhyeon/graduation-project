@@ -9,38 +9,47 @@ def query_prometheus(query):
     result = prom.custom_query(query=query)
     return result
 
-def adjust_pod_resources(name, namespace, new_resources):
-    api_instance = client.CoreV1Api()
+def adjust_task_resources(workflow_name, namespace, task_name, new_resources):
+    api_instance = client.CustomObjectsApi()
+    group = 'argoproj.io'
+    version = 'v1alpha1'
+    plural = 'workflows'
+
+    # Woking if pod_name==workflow_task_name
     try:
-        pod = api_instance.read_namespaced_pod(name=name, namespace=namespace)
-        pod.spec.containers[0].resources = new_resources
-        api_instance.replace_namespaced_pod(name=name, namespace=namespace, body=pod)
-        print(f"Pod {name} in {namespace} has been adjusted.")
+        workflow = api_instance.get_namespaced_custom_object(group, version, namespace, plural, workflow_name)
+        for template in workflow['spec']['templates']:
+            if template['name'] == task_name:
+                template['container']['resources'] = new_resources
+        
+        api_instance.replace_namespaced_custom_object(group, version, namespace, plural, workflow_name, workflow)
+        print(f"Workflow {workflow_name} in {namespace} has been adjusted.")
     except client.exceptions.ApiException as e:
-        print(f"Exception when calling CoreV1Api->replace_namespaced_pod: {e}")
+        print(f"Exception when calling CustomObjectsApi->replace_namespaced_custom_object: {e}")
 
 @kopf.on.startup()
 def configure(settings: kopf.OperatorSettings, **_):
     config.load_incluster_config()
     settings.posting.level = 'INFO'
 
-@kopf.timer('pods', interval=60)
+@kopf.timer('workflows', interval=60)
 def adjust_resources_periodically(namespace, name, logger, **kwargs):
     query = 'workload:adas_long_term_cpu_usage:q95_max_rate_1m'
     try:
         results = query_prometheus(query)
         for result in results:
-            pod_namespace = result['metric'].get('namespace')
-            pod_name = result['metric'].get('pod')
+            workflow_namespace = result['metric'].get('namespace')
+            workflow_name = result['metric'].get('workflow')
+            task_name = result['metric'].get('pod')  
             cpu_usage = result['value'][1]
 
-            new_resources = client.V1ResourceRequirements(
-                requests={"cpu": f"{float(cpu_usage) * 1000}m"},
-                limits={"cpu": f"{float(cpu_usage) * 2000}m"}
-            )
+            new_resources = {
+                "requests": {"cpu": f"{float(cpu_usage) * 1000}m"},
+                "limits": {"cpu": f"{float(cpu_usage) * 2000}m"}
+            }
 
-            if pod_namespace == namespace and pod_name == name:
-                adjust_pod_resources(pod_name, pod_namespace, new_resources)
+            if workflow_namespace == namespace and workflow_name == name:
+                adjust_task_resources(workflow_name, workflow_namespace, task_name, new_resources)
     except Exception as e:
         logger.error(f"Exception when querying Prometheus: {e}")
 
