@@ -46,8 +46,11 @@ GCP 환경에서 Argo Workflow로 HPC Workload 배포시 유연한 적응을 위
 - 해당 프로세스는 [Source](./In-Cluster/)에서 확인 가능하며, operator의 경우 [Helm 차트](https://github.com/dusdjhyeon/graduation-as-helm)로 배포됩니다. 
 - 각 자율주행 환경별로 다른 Cluster에서 Simulation을 실행하도록 해 Multi-Cluster 환경을 구성합니다.
 - Main Cluster에서 각 Cluster를 Crossplane으로 배포하고, 각 Prometheus 메트릭을 수집하는 Prometheus를 둡니다.
-- Main Cluster의 Prometheus의 메트릭을 쿼리해 장기간 실행 라벨이 붙은 워크로드에 대해서 매일 새벽 2시 자동으로 Pod Scale이 되도록 합니다.
-- CPU의 Upper Bound에 맞춰 python operator가 pod의 사양을 자동으로 변경해줍니다. 
+- Main Cluster의 Prometheus의 메트릭을 쿼리해 장기간 실행 라벨이 붙은 워크로드에 대해서 매일 새벽 2시 자동으로 각 pod에 적합하도록 workload spec을 변경하도록 합니다.
+- CPU의 Upper Bound에 맞춰 python operator가 workflow template을 자동으로 변경해줍니다.
+
+#### Change to appropriate pod resource usage by operator
+![cpu](./images/cpu-optimize.png)
 
 <br>
 
