@@ -15,6 +15,8 @@
 해당 프로젝트는 Advanced Driver Assistance System(ADAS) 시뮬레이션을 위한 클라우드 환경을 일반적인 고성능 컴퓨팅과 Job Schedule을 이용한 방식이 아닌 Kubernetes 환경에서 진행하기 위한 인프라 아키텍처 설계 연구입니다. 
 GCP 환경에서 Argo Workflow로 HPC Workload 배포시 유연한 적응을 위한 환경을 Kubernetes를 이용해 구축합니다. 
 
+> 해당 Repository는 실제 환경 구축에 사용했던 코드 중 중요 코드를 일부 옮겨 놓은 것으로 repo만으로 배포가 불가능 하며, 실제 코드와 차이가 있을 수 있습니다. 
+
 ### :card_file_box: Built With
 #### :bulb: Language
 [![Python][Python]][Python-url]

@@ -23,9 +23,12 @@ spec:
       command: ["stress"]
       args: ["--cpu", "2", "--timeout", "{{inputs.parameters.duration}}"]
       resources:
+        requests:
+          memory: "64Mi"
+          cpu: "250m"
         limits:
-          cpu: "1"
-          memory: "512Mi"
+          memory: "128Mi"
+          cpu: "500m"
       env:
         - name: long_term
           value: "true" 
