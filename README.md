@@ -93,13 +93,16 @@ GCP 환경에서 Argo Workflow로 HPC Workload 배포시 유연한 적응을 위
 
 #### Change to appropriate pod resource usage by operator
 ![cpu](./images/cpu-opti.png)
-
+Workload따라 달라질 수 있으나 Sample 이미지에서는 다음과 같은 결과:
+- 최적화된 CPU 할당량의 평균값: 0.701
+- CPU 절약량: 0.230
+- 절약된 CPU 자원의 백분율: 29.988%
 <br>
 
 ### :triangular_flag_on_post: Detailed Logic
 <img src="./images/dag-spot.png" style="width:300px;">
 
-- DAG 수행중 일부 워크로드의 경우 spot vm에서 실행 가능하도록 해 비용 및 노드 리소스를 절감합니다. 
+- DAG 수행중 일부 워크로드의 경우 spot vm에서 실행 가능하도록 해 비용 및 노드 리소스를 절감할 수 있습니다. 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 <br>
