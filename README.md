@@ -92,7 +92,7 @@ GCP 환경에서 Argo Workflow로 HPC Workload 배포시 유연한 적응을 위
 - CPU의 Upper Bound에 맞춰 python operator가 workflow template을 자동으로 변경해줍니다.
 
 #### Change to appropriate pod resource usage by operator
-![cpu](./images/cpu-optimize.png)
+![cpu](./images/cpu-opti.png)
 
 <br>
 
